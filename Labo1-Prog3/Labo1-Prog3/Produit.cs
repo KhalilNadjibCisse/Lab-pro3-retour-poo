@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CaféChezGino
 {
     public abstract class Produit
     {
         public string Nom { get; }
-        public double Prix { get; }   
+        public double Prix { get; }
         public int TempsPreparationSuppEnSec { get; }
         public List<Ingredient> Ingredients { get; }
 
@@ -18,11 +19,21 @@ namespace CaféChezGino
             Ingredients = ingredients;
         }
 
-        public abstract Produit Preparer(string numCommande);
-        public abstract void Dressage();
-
-        public void FairePayer(string numCommande)
+        // Maintenant virtual async
+        public virtual async Task<Produit> Preparer(string numCommande)
         {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Début de la préparation de la commande {numCommande} : {Nom}");
+            Console.ForegroundColor = ConsoleColor.White;
+            await Task.Delay(1000);
+            return this;
+        }
+
+        public abstract Task Dressage();
+
+        public async Task FairePayer(string numCommande)
+        {
+            await Task.Yield(); // petit point d’attente
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Commande {numCommande} est prête !");
             Console.WriteLine($"Prix à payer : {Prix}$");
